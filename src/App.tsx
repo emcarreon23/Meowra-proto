@@ -14,7 +14,7 @@ function AnimatedRoutes() {
       <div key={location.pathname}>
         <Routes location={location}>
           <Route
-          path="/"
+          path="/landing"
           element={
             <motion.div
               initial={{ opacity: 0 }}
@@ -27,7 +27,7 @@ function AnimatedRoutes() {
           }
         />
         <Route
-          path="/app"
+          path="/"
           element={
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}

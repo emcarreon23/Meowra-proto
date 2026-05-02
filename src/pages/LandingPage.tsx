@@ -46,7 +46,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                to="/app"
+                to="/"
                 className="px-8 py-4 bg-rose-400 text-white rounded-2xl text-lg font-bold hover:bg-rose-500 transition-all shadow-lg shadow-rose-200/50 flex items-center gap-2 group active:scale-95"
               >
                 Try It Now

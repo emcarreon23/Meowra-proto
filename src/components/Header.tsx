@@ -21,33 +21,7 @@ export default function Header() {
         </Link>
 
         <nav className="flex items-center gap-8">
-          <Link
-            to="/app"
-            className={`text-sm font-medium transition-colors ${
-              location.pathname === "/app" ? "text-rose-400" : "text-slate-500 hover:text-rose-300"
-            }`}
-          >
-            Converter
-          </Link>
-          <Link
-            to="/history"
-            className={`text-sm font-medium transition-colors ${
-              location.pathname === "/history" ? "text-rose-400" : "text-slate-500 hover:text-rose-300"
-            }`}
-          >
-            History
-          </Link>
-          <div className="flex items-center gap-4 ml-4">
-            <button className="hidden sm:block px-5 py-2 rounded-full border border-rose-200 text-rose-400 text-sm font-semibold hover:bg-rose-50 transition-colors">
-              Log In
-            </button>
-            <Link
-              to="/app"
-              className="px-5 py-2 rounded-full bg-rose-400 text-white text-sm font-semibold shadow-lg shadow-rose-200 hover:bg-rose-500 transition-all active:scale-95"
-            >
-              Try Premium
-            </Link>
-          </div>
+          {/* External navigation links removed as requested */}
         </nav>
       </div>
     </header>
