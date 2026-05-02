@@ -46,17 +46,19 @@ export default function AppPage() {
     setIsLoading(true);
     try {
       const prompt = `
-        You are MEOWRA, a kind-hearted AI companion. 
-        Your goal is to rewrite the following message to be ${tone.toLowerCase()} and kinder, while preserving the original intent completely.
-        
+        Rewrite the following message to be ${tone.toLowerCase()} and kinder, while preserving the original intent.
+
+        CRITICAL: Output ONLY the rewritten content. 
+        Do NOT include any introductions, conversational filler, or commentary like "Hello there, I am MEOWRA".
+        Do NOT include quotes around the output unless they are part of the message itself.
+
         Original Mode: ${mode}
         Target Tone: ${tone}
-        
+
         Original Message:
         ${mode === 'Email' ? `Subject: ${subject}\n\n` : ''}${input}
-        
-        Re-write it beautifully. If it's an email, provide both a subject line (if applicable) and the body.
-        Format the output clearly.
+
+        If the mode is 'Email', include a "Subject:" line if a subject is relevant.
       `;
 
       const response = await ai.models.generateContent({
@@ -232,7 +234,7 @@ export default function AppPage() {
                   className="flex-1 h-full flex flex-col"
                 >
                   <div className="flex-1 text-slate-700 leading-relaxed italic pr-2 whitespace-pre-wrap">
-                    "{output}"
+                    {output}
                   </div>
                   <div className="flex gap-3 mt-8">
                     <button
