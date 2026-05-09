@@ -24,6 +24,7 @@ interface HistoryItem {
   original: string;
   subject?: string;
   converted: string;
+  explanation?: string;
   tone: Tone;
   mode: Mode;
   timestamp: number;
@@ -33,6 +34,7 @@ export default function AppPage() {
   const [input, setInput] = useState('');
   const [subject, setSubject] = useState('');
   const [output, setOutput] = useState('');
+  const [explanation, setExplanation] = useState('');
   const [tone, setTone] = useState<Tone>('Friendly');
   const [mode, setMode] = useState<Mode>('Text');
   const [isLoading, setIsLoading] = useState(false);
@@ -48,8 +50,13 @@ export default function AppPage() {
       const prompt = `
         Rewrite the following message to be ${tone.toLowerCase()} and kinder, while preserving the original intent.
 
-        CRITICAL: Output ONLY the rewritten content. 
-        Do NOT include any introductions, conversational filler, or commentary like "Hello there, I am MEOWRA".
+        ALSO, provide a short, supportive 1-2 sentence explanation of WHY these specific changes help improve the communication (e.g., "Using 'we' instead of 'you' reduces blame" or "Focusing on the solution rather than the problem stay constructive").
+
+        FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+        CONVERSION: [The rewritten kind content]
+        EXPLANATION: [The educational explanation]
+
+        CRITICAL: Do NOT include any introductions, conversational filler, or commentary like "Hello there, I am MEOWRA".
         Do NOT include quotes around the output unless they are part of the message itself.
 
         Original Mode: ${mode}
@@ -57,8 +64,6 @@ export default function AppPage() {
 
         Original Message:
         ${mode === 'Email' ? `Subject: ${subject}\n\n` : ''}${input}
-
-        If the mode is 'Email', include a "Subject:" line if a subject is relevant.
       `;
 
       const response = await ai.models.generateContent({
@@ -66,8 +71,21 @@ export default function AppPage() {
         contents: prompt,
       });
 
-      const convertedText = response.text || "I couldn't find a kinder way to say that... could you try rephrasing for me?";
+      const fullText = response.text || "";
+      
+      let convertedText = "I couldn't find a kinder way to say that... could you try rephrasing for me?";
+      let explanationText = "";
+
+      if (fullText.includes("CONVERSION:") && fullText.includes("EXPLANATION:")) {
+        const parts = fullText.split("EXPLANATION:");
+        convertedText = parts[0].replace("CONVERSION:", "").trim();
+        explanationText = parts[1].trim();
+      } else {
+        convertedText = fullText.trim();
+      }
+
       setOutput(convertedText);
+      setExplanation(explanationText);
 
       // Save to history
       const historyItem: HistoryItem = {
@@ -75,6 +93,7 @@ export default function AppPage() {
         original: input,
         subject: mode === 'Email' ? subject : undefined,
         converted: convertedText,
+        explanation: explanationText,
         tone,
         mode,
         timestamp: Date.now()
@@ -86,6 +105,7 @@ export default function AppPage() {
     } catch (error) {
       console.error("Conversion failed:", error);
       setOutput("Oops! My whiskers got tangled. Please try again.");
+      setExplanation("");
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +121,7 @@ export default function AppPage() {
     setInput('');
     setSubject('');
     setOutput('');
+    setExplanation('');
   };
 
   return (
@@ -236,6 +257,23 @@ export default function AppPage() {
                   <div className="flex-1 text-slate-700 leading-relaxed italic pr-2 whitespace-pre-wrap">
                     {output}
                   </div>
+
+                  {explanation && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-6 pt-6 border-t border-rose-100/50"
+                    >
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-2">
+                        <Sparkles className="w-3 h-3" />
+                        Why this works
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed font-medium bg-white/50 p-4 rounded-2xl border border-rose-50/50 shadow-sm">
+                        {explanation}
+                      </p>
+                    </motion.div>
+                  )}
+
                   <div className="flex gap-3 mt-8">
                     <button
                       onClick={handleCopy}

@@ -7,6 +7,7 @@ interface HistoryItem {
   original: string;
   subject?: string;
   converted: string;
+  explanation?: string;
   tone: string;
   mode: string;
   timestamp: number;
@@ -97,6 +98,12 @@ export default function HistoryPage() {
                 <div className="p-5 bg-rose-50/30 rounded-2xl text-xs text-slate-700 font-medium relative border border-rose-50/50">
                   <div className="text-[8px] absolute top-2 right-4 font-bold uppercase tracking-widest text-rose-300">Meowra</div>
                   {item.converted}
+                  {item.explanation && (
+                    <div className="mt-4 pt-4 border-t border-rose-100/30 text-[10px] text-slate-400 leading-relaxed font-normal italic">
+                      <span className="font-bold text-rose-300 not-italic uppercase tracking-tighter mr-1">Impact:</span>
+                      {item.explanation}
+                    </div>
+                  )}
                 </div>
               </div>
 
